@@ -6,6 +6,7 @@ const [length,setLength]=useState(8)
 const [password,setPassword]=useState("")
 const [numberallowed,setNumberallowed]=useState(false)
 const [charallowed,setCharallowed]=useState(false)
+const [showColour,setShowColour]=useState(false)
 
 let passwordRef=useRef(null)
 
@@ -15,7 +16,7 @@ let str="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 if(numberallowed) str+="0123456789"
 if(charallowed) str+="!@#$%^&*()+-{}/?~"
 for(let i=1;i<=length;i++){
-  let char=Math.floor(Math.random()*str.length+1)
+  let char=Math.floor(Math.random()*str.length)
   pass+=str.charAt(char)
 }
 setPassword(pass)
@@ -24,8 +25,13 @@ setPassword(pass)
 const copyToClipBoard=useCallback(()=>{
   passwordRef.current?.select()
   passwordRef.current?.setSelectionRange(0, 99);
- window.navigator.clipboard.writeText(password)
+  window.navigator.clipboard.writeText(password)
+  setTimeout(()=>{
+    setShowColour((prev)=>!prev)
+  },100)
+
 },[password])
+
 
 useEffect(() => {
   passwordGenerator()
@@ -38,8 +44,9 @@ useEffect(() => {
       <p className='text-xl text-center my-3'>Password Generator</p>
       <div className=' w-full flex shadow rounded-lg'>
         <input 
+        ref={passwordRef}
         type="text" 
-        className='outline-none w-full py-1 px-3 bg-white'
+        className="outline-none w-full py-1 px-3 bg-white"
         value={password}
         placeholder='Password'
         readOnly
@@ -79,7 +86,7 @@ useEffect(() => {
            defaultChecked={charallowed}
            onChange={()=>setCharallowed((prev)=>!prev)}
           />
-             
+            
         </div>
       </div>
 
